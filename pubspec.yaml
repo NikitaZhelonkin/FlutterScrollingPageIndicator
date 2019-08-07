@@ -1,8 +1,8 @@
 name: scrolling_page_indicator
 description: Flutter scrolling page indicator
 version: 0.0.1
-author:
-homepage:
+author: "Nikita Zhelonkin <niks.mbox@gmail.com>"
+homepage: 'https://github.com/NikitaZhelonkin/FlutterScrollingPageIndicator'
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
