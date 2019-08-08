@@ -1,6 +1,6 @@
 name: scrolling_page_indicator
-description: Flutter scrolling page indicator
-version: 0.0.1
+description: Flutter implementation of page view indicator like Instagram
+version: 0.1.1
 author: "Nikita Zhelonkin <niks.mbox@gmail.com>"
 homepage: 'https://github.com/NikitaZhelonkin/FlutterScrollingPageIndicator'
 

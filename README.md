@@ -1,6 +1,6 @@
 # scrolling_page_indicator
 
-Pager indicator like Instagram
+View page indicator like Instagram
 
 ![preview](demo.gif)
 
@@ -10,7 +10,7 @@ Pager indicator like Instagram
 
 ```yaml
 dependencies:
-  scrolling_page_indicator: ^0.0.1
+  scrolling_page_indicator: ^0.1.1
 ```
 2) Install
 
