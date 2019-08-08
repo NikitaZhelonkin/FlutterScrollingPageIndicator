@@ -1,4 +1,5 @@
 # scrolling_page_indicator
+[![pub package](https://img.shields.io/pub/v/scrolling_page_indicator.svg)](https://pub.dartlang.org/packages/scrolling_page_indicator)
 
 View page indicator like Instagram
 
