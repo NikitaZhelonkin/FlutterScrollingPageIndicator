@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
               dotColor: Colors.grey,
               dotSelectedColor: Colors.deepPurple,
               dotSize: 6,
-              orientation: Axis.vertical,
+              orientation: Axis.horizontal,
               dotSelectedSize: 8,
               dotSpacing: 12,
               controller: _controller,
