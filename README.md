@@ -11,7 +11,7 @@ View page indicator like Instagram
 
 ```yaml
 dependencies:
-  scrolling_page_indicator: ^0.1.1
+  scrolling_page_indicator: ^0.1.2
 ```
 2) Install
 
@@ -34,5 +34,6 @@ ScrollingPageIndicator(
     dotSpacing: 12,
     controller: _controller,
     itemCount: items.length,
+    orientation: Axis.horizontal
 )
 ```
