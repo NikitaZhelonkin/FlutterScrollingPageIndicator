@@ -47,30 +47,34 @@ class _MyHomePageState extends State<MyHomePage> {
       buildPage("6", Colors.pink),
       buildPage("7", Colors.brown)
     ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Column(
-        children: <Widget>[
-          SizedBox(
-            height: 300,
-            child: PageView(
-              children: items,
-              controller: _controller,
+      body: SizedBox(
+        height: 300,
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: PageView(
+                children: items,
+                controller: _controller,
+              ),
             ),
-          ),
-          ScrollingPageIndicator(
-            dotColor: Colors.grey,
-            dotSelectedColor: Colors.deepPurple,
-            dotSize: 6,
-            dotSelectedSize: 8,
-            dotSpacing: 12,
-            controller: _controller,
-            itemCount: items.length,
-          ),
+            ScrollingPageIndicator(
+              dotColor: Colors.grey,
+              dotSelectedColor: Colors.deepPurple,
+              dotSize: 6,
+              orientation: Axis.vertical,
+              dotSelectedSize: 8,
+              dotSpacing: 12,
+              controller: _controller,
+              itemCount: items.length,
+            ),
 
-        ],
+          ],
+        ),
       ),
     );
   }

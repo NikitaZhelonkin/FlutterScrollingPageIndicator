@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -22,6 +23,8 @@ class ScrollingPageIndicator extends StatefulWidget {
 
   final PageController controller;
 
+  final Axis orientation;
+
   ScrollingPageIndicator({
     Key key,
     this.dotSize: 6.0,
@@ -33,7 +36,9 @@ class ScrollingPageIndicator extends StatefulWidget {
     this.visibleDotThreshold = 2,
     this.itemCount,
     this.controller,
-  })  : assert(itemCount != null),
+    this.orientation = Axis.horizontal
+  })
+      : assert(itemCount != null),
         assert(controller != null),
         assert(visibleDotCount % 2 != 0),
         super(key: key);
@@ -49,7 +54,6 @@ class _ScrollingPageIndicatorState extends State<ScrollingPageIndicator> {
   double _page = 0;
 
   Paint _paint = new Paint();
-
 
 
   @override
@@ -75,22 +79,22 @@ class _ScrollingPageIndicatorState extends State<ScrollingPageIndicator> {
 
   @override
   Widget build(BuildContext context) {
-    int itemCount = widget.itemCount >= widget.visibleDotCount ? widget.visibleDotCount : widget.itemCount;
+    int itemCount = widget.itemCount >= widget.visibleDotCount ? widget.visibleDotCount : widget
+        .itemCount;
     double width = (itemCount - 1) * widget.dotSpacing + widget.dotSelectedSize;
     Widget child = new SizedBox(
-      width: width,
-      height: widget.dotSelectedSize,
-      child: new CustomPaint(painter: _Painter(widget, currentPage, _paint)),
-    );
+        width: widget.orientation == Axis.horizontal ? width : widget.dotSelectedSize,
+        height: widget.orientation == Axis.vertical ? width : widget.dotSelectedSize,
+        child: new CustomPaint(painter: _Painter(widget, currentPage, _paint, widget.orientation)));
     return new IgnorePointer(
       child: child,
     );
   }
 
-  double get currentPage{
-    try{
+  double get currentPage {
+    try {
       return widget.controller.page ?? 0.0;
-    }catch (Exception){
+    } catch (Exception) {
       return 0.0;
     }
   }
@@ -107,12 +111,13 @@ class _Painter extends CustomPainter {
   final ScrollingPageIndicator _widget;
   final double _page;
   final Paint _paint;
+  final Axis orientation;
 
   double _visibleFramePosition;
 
   double _firstDotOffset;
 
-  _Painter(this._widget, this._page, this._paint) {
+  _Painter(this._widget, this._page, this._paint, this.orientation) {
     _firstDotOffset = _widget.itemCount > _widget.visibleDotCount ? 0 : _widget.dotSelectedSize / 2;
   }
 
@@ -122,15 +127,20 @@ class _Painter extends CustomPainter {
     if (_widget.itemCount < _widget.visibleDotThreshold) {
       return;
     }
-    adjustFramePosition(_page, size.width);
+    double width = orientation == Axis.horizontal ? size.width : size.height;
+    double height = orientation == Axis.vertical ? size.width : size.height;
+
+    adjustFramePosition(_page, width);
 
     // Some empirical coefficients
-    double scaleDistance = (_widget.dotSpacing + (_widget.dotSelectedSize - _widget.dotSize) / 2) * 0.7;
+    double scaleDistance = (_widget.dotSpacing + (_widget.dotSelectedSize - _widget.dotSize) / 2) *
+        0.7;
     double smallScaleDistance = _widget.dotSelectedSize / 2;
 
-    int firstVisibleDotPos = ((_visibleFramePosition - _firstDotOffset) / _widget.dotSpacing).floor();
+    int firstVisibleDotPos = ((_visibleFramePosition - _firstDotOffset) / _widget.dotSpacing)
+        .floor();
     int lastVisibleDotPos = firstVisibleDotPos +
-        ((_visibleFramePosition + size.width - getDotOffsetAt(firstVisibleDotPos)) /
+        ((_visibleFramePosition + width - getDotOffsetAt(firstVisibleDotPos)) /
             _widget.dotSpacing)
             .floor();
 
@@ -142,13 +152,13 @@ class _Painter extends CustomPainter {
 
     for (int i = firstVisibleDotPos; i <= lastVisibleDotPos; i++) {
       double dot = getDotOffsetAt(i);
-      if (dot >= _visibleFramePosition && dot < _visibleFramePosition + size.width) {
+      if (dot >= _visibleFramePosition && dot < _visibleFramePosition + width) {
         double diameter;
         double scale;
 
         // Calculate scale according to current page position
         scale = getDotScaleAt(i);
-        diameter = lerp(_widget.dotSize, _widget.dotSelectedSize, scale);
+        diameter = lerpDouble(_widget.dotSize, _widget.dotSelectedSize, scale);
 
         // Additional scale for dots at corners
         if (_widget.itemCount > _widget.visibleDotCount) {
@@ -160,18 +170,25 @@ class _Painter extends CustomPainter {
           }
 
           if (dot - _visibleFramePosition < currentScaleDistance) {
-            double calculatedDiameter = diameter * (dot - _visibleFramePosition) / currentScaleDistance;
+            double calculatedDiameter = diameter * (dot - _visibleFramePosition) /
+                currentScaleDistance;
             diameter = min(diameter, calculatedDiameter);
-          } else if (dot - _visibleFramePosition > size.width - currentScaleDistance) {
+          } else if (dot - _visibleFramePosition > width - currentScaleDistance) {
             double calculatedDiameter =
-                diameter * (-dot + _visibleFramePosition + size.width) / currentScaleDistance;
+                diameter * (-dot + _visibleFramePosition + width) / currentScaleDistance;
             diameter = min(diameter, calculatedDiameter);
           }
         }
 
         _paint.color = Color.lerp(_widget.dotColor, _widget.dotSelectedColor, scale);
 
-        canvas.drawCircle(new Offset(dot - _visibleFramePosition, size.height / 2), diameter / 2, _paint);
+        if (orientation == Axis.horizontal) {
+          canvas.drawCircle(
+              new Offset(dot - _visibleFramePosition, height / 2), diameter / 2, _paint);
+        } else {
+          canvas.drawCircle(
+              new Offset(height / 2, dot - _visibleFramePosition), diameter / 2, _paint);
+        }
       }
     }
   }
@@ -216,7 +233,4 @@ class _Painter extends CustomPainter {
     return oldDelegate._page != _page;
   }
 
-  double lerp(double begin, double end, double progress) {
-    return begin + (end - begin) * progress;
-  }
 }
