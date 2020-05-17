@@ -25,6 +25,8 @@ class ScrollingPageIndicator extends StatefulWidget {
 
   final Axis orientation;
 
+  final bool reverse;
+
   ScrollingPageIndicator({
     Key key,
     this.dotSize: 6.0,
@@ -36,7 +38,8 @@ class ScrollingPageIndicator extends StatefulWidget {
     this.visibleDotThreshold = 2,
     this.itemCount,
     this.controller,
-    this.orientation = Axis.horizontal
+    this.orientation = Axis.horizontal,
+    this.reverse = false
   })
       : assert(itemCount != null),
         assert(controller != null),
@@ -99,7 +102,6 @@ class _ScrollingPageIndicatorState extends State<ScrollingPageIndicator> {
     }
   }
 
-
   void _onController() {
     setState(() {});
   }
@@ -121,6 +123,18 @@ class _Painter extends CustomPainter {
     _firstDotOffset = _widget.itemCount > _widget.visibleDotCount ? 0 : _widget.dotSelectedSize / 2;
   }
 
+  double get page {
+    try {
+      if(_widget.reverse){
+        return _widget.itemCount-1-_page;
+      }else{
+        return _page;
+      }
+    } catch (Exception) {
+      return 0.0;
+    }
+  }
+
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -130,7 +144,7 @@ class _Painter extends CustomPainter {
     double width = orientation == Axis.horizontal ? size.width : size.height;
     double height = orientation == Axis.vertical ? size.width : size.height;
 
-    adjustFramePosition(_page, width);
+    adjustFramePosition(page, width);
 
     // Some empirical coefficients
     double scaleDistance = (_widget.dotSpacing + (_widget.dotSelectedSize - _widget.dotSize) / 2) *
@@ -198,8 +212,8 @@ class _Painter extends CustomPainter {
   }
 
   double getDotScaleAt(int index) {
-    int position = _page.floor();
-    double offset = _page - position;
+    int position = page.floor();
+    double offset = page - position;
     if (index == position) {
       return 1 - offset.abs();
     } else if (index == position + 1 && position < _widget.itemCount - 1) {
