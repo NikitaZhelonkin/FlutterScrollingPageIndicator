@@ -194,7 +194,7 @@ class _Painter extends CustomPainter {
           }
         }
 
-        _paint.color = Color.lerp(_widget.dotColor!, _widget.dotSelectedColor!, scale)!;
+        _paint.color = Color.lerp(_widget.dotColor!, _widget.dotSelectedColor, scale)!;
 
         if (orientation == Axis.horizontal) {
           canvas.drawCircle(
