@@ -9,7 +9,7 @@ class ScrollingPageIndicator extends StatefulWidget {
 
   final double dotSelectedSize;
 
-  final Color dotColor;
+  final Color? dotColor;
 
   final Color dotSelectedColor;
 
@@ -19,16 +19,16 @@ class ScrollingPageIndicator extends StatefulWidget {
 
   final int visibleDotThreshold;
 
-  final int itemCount;
+  final int? itemCount;
 
-  final PageController controller;
+  final PageController? controller;
 
   final Axis orientation;
 
   final bool reverse;
 
   ScrollingPageIndicator({
-    Key key,
+    Key? key,
     this.dotSize: 6.0,
     this.dotSelectedSize: 10.0,
     this.dotColor: Colors.grey,
@@ -61,29 +61,29 @@ class _ScrollingPageIndicatorState extends State<ScrollingPageIndicator> {
 
   @override
   void initState() {
-    widget.controller.addListener(_onController);
+    widget.controller!.addListener(_onController);
     super.initState();
   }
 
   @override
   void didUpdateWidget(ScrollingPageIndicator oldWidget) {
     if (widget.controller != oldWidget.controller) {
-      oldWidget.controller.removeListener(_onController);
-      widget.controller.addListener(_onController);
+      oldWidget.controller!.removeListener(_onController);
+      widget.controller!.addListener(_onController);
     }
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void dispose() {
-    widget.controller.removeListener(_onController);
+    widget.controller!.removeListener(_onController);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    int itemCount = widget.itemCount >= widget.visibleDotCount ? widget.visibleDotCount : widget
-        .itemCount;
+    int itemCount = (widget.itemCount! >= widget.visibleDotCount ? widget.visibleDotCount : widget
+        .itemCount)!;
     double width = (itemCount - 1) * widget.dotSpacing + widget.dotSelectedSize;
     Widget child = new SizedBox(
         width: widget.orientation == Axis.horizontal ? width : widget.dotSelectedSize,
@@ -96,7 +96,7 @@ class _ScrollingPageIndicatorState extends State<ScrollingPageIndicator> {
 
   double get currentPage {
     try {
-      return widget.controller.page ?? 0.0;
+      return widget.controller!.page ?? 0.0;
     } catch (Exception) {
       return 0.0;
     }
@@ -115,18 +115,18 @@ class _Painter extends CustomPainter {
   final Paint _paint;
   final Axis orientation;
 
-  double _visibleFramePosition;
+  double? _visibleFramePosition;
 
-  double _firstDotOffset;
+  double? _firstDotOffset;
 
   _Painter(this._widget, this._page, this._paint, this.orientation) {
-    _firstDotOffset = _widget.itemCount > _widget.visibleDotCount ? 0 : _widget.dotSelectedSize / 2;
+    _firstDotOffset = _widget.itemCount! > _widget.visibleDotCount ? 0 : _widget.dotSelectedSize / 2;
   }
 
   double get page {
     try {
       if(_widget.reverse){
-        return _widget.itemCount-1-_page;
+        return _widget.itemCount!-1-_page;
       }else{
         return _page;
       }
@@ -138,7 +138,7 @@ class _Painter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (_widget.itemCount < _widget.visibleDotThreshold) {
+    if (_widget.itemCount! < _widget.visibleDotThreshold) {
       return;
     }
     double width = orientation == Axis.horizontal ? size.width : size.height;
@@ -151,64 +151,64 @@ class _Painter extends CustomPainter {
         0.7;
     double smallScaleDistance = _widget.dotSelectedSize / 2;
 
-    int firstVisibleDotPos = ((_visibleFramePosition - _firstDotOffset) / _widget.dotSpacing)
+    int firstVisibleDotPos = ((_visibleFramePosition! - _firstDotOffset!) / _widget.dotSpacing)
         .floor();
     int lastVisibleDotPos = firstVisibleDotPos +
-        ((_visibleFramePosition + width - getDotOffsetAt(firstVisibleDotPos)) /
+        ((_visibleFramePosition! + width - getDotOffsetAt(firstVisibleDotPos)) /
             _widget.dotSpacing)
             .floor();
 
     // If real dots count is less than we can draw inside visible frame, we move lastVisibleDotPos
     // to the last item
-    if (firstVisibleDotPos == 0 && lastVisibleDotPos + 1 > _widget.itemCount) {
-      lastVisibleDotPos = _widget.itemCount - 1;
+    if (firstVisibleDotPos == 0 && lastVisibleDotPos + 1 > _widget.itemCount!) {
+      lastVisibleDotPos = _widget.itemCount! - 1;
     }
 
     for (int i = firstVisibleDotPos; i <= lastVisibleDotPos; i++) {
       double dot = getDotOffsetAt(i);
-      if (dot >= _visibleFramePosition && dot < _visibleFramePosition + width) {
+      if (dot >= _visibleFramePosition! && dot < _visibleFramePosition! + width) {
         double diameter;
         double scale;
 
         // Calculate scale according to current page position
         scale = getDotScaleAt(i);
-        diameter = lerpDouble(_widget.dotSize, _widget.dotSelectedSize, scale);
+        diameter = lerpDouble(_widget.dotSize, _widget.dotSelectedSize, scale)!;
 
         // Additional scale for dots at corners
-        if (_widget.itemCount > _widget.visibleDotCount) {
+        if (_widget.itemCount! > _widget.visibleDotCount) {
           double currentScaleDistance;
-          if ((i == 0 || i == _widget.itemCount - 1)) {
+          if ((i == 0 || i == _widget.itemCount! - 1)) {
             currentScaleDistance = smallScaleDistance;
           } else {
             currentScaleDistance = scaleDistance;
           }
 
-          if (dot - _visibleFramePosition < currentScaleDistance) {
-            double calculatedDiameter = diameter * (dot - _visibleFramePosition) /
+          if (dot - _visibleFramePosition! < currentScaleDistance) {
+            double calculatedDiameter = diameter * (dot - _visibleFramePosition!) /
                 currentScaleDistance;
             diameter = min(diameter, calculatedDiameter);
-          } else if (dot - _visibleFramePosition > width - currentScaleDistance) {
+          } else if (dot - _visibleFramePosition! > width - currentScaleDistance) {
             double calculatedDiameter =
-                diameter * (-dot + _visibleFramePosition + width) / currentScaleDistance;
+                diameter * (-dot + _visibleFramePosition! + width) / currentScaleDistance;
             diameter = min(diameter, calculatedDiameter);
           }
         }
 
-        _paint.color = Color.lerp(_widget.dotColor, _widget.dotSelectedColor, scale);
+        _paint.color = Color.lerp(_widget.dotColor!, _widget.dotSelectedColor!, scale)!;
 
         if (orientation == Axis.horizontal) {
           canvas.drawCircle(
-              new Offset(dot - _visibleFramePosition, height / 2), diameter / 2, _paint);
+              new Offset(dot - _visibleFramePosition!, height / 2), diameter / 2, _paint);
         } else {
           canvas.drawCircle(
-              new Offset(height / 2, dot - _visibleFramePosition), diameter / 2, _paint);
+              new Offset(height / 2, dot - _visibleFramePosition!), diameter / 2, _paint);
         }
       }
     }
   }
 
   double getDotOffsetAt(int index) {
-    return _firstDotOffset + index * _widget.dotSpacing;
+    return _firstDotOffset! + index * _widget.dotSpacing;
   }
 
   double getDotScaleAt(int index) {
@@ -216,7 +216,7 @@ class _Painter extends CustomPainter {
     double offset = page - position;
     if (index == position) {
       return 1 - offset.abs();
-    } else if (index == position + 1 && position < _widget.itemCount - 1) {
+    } else if (index == position + 1 && position < _widget.itemCount! - 1) {
       return 1 - (1 - offset).abs();
     }
     return 0;
@@ -225,7 +225,7 @@ class _Painter extends CustomPainter {
   void adjustFramePosition(double page, double width) {
     int position = page.floor();
     double offset = page - position;
-    if (_widget.itemCount <= _widget.visibleDotCount) {
+    if (_widget.itemCount! <= _widget.visibleDotCount) {
       _visibleFramePosition = 0;
     } else {
       double center = getDotOffsetAt(position) + _widget.dotSpacing * offset;
@@ -233,10 +233,10 @@ class _Painter extends CustomPainter {
 
       // Block frame offset near start and end
       int firstCenteredDotIndex = (_widget.visibleDotCount / 2).floor();
-      double lastCenteredDot = getDotOffsetAt(_widget.itemCount - 1 - firstCenteredDotIndex);
-      if (_visibleFramePosition + width / 2 < getDotOffsetAt(firstCenteredDotIndex)) {
+      double lastCenteredDot = getDotOffsetAt(_widget.itemCount! - 1 - firstCenteredDotIndex);
+      if (_visibleFramePosition! + width / 2 < getDotOffsetAt(firstCenteredDotIndex)) {
         _visibleFramePosition = getDotOffsetAt(firstCenteredDotIndex) - width / 2;
-      } else if (_visibleFramePosition + width / 2 > lastCenteredDot) {
+      } else if (_visibleFramePosition! + width / 2 > lastCenteredDot) {
         _visibleFramePosition = lastCenteredDot - width / 2;
       }
     }
