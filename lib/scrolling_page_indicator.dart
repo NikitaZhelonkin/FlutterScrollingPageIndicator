@@ -246,5 +246,4 @@ class _Painter extends CustomPainter {
   bool shouldRepaint(_Painter oldDelegate) {
     return oldDelegate._page != _page;
   }
-
 }
