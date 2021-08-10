@@ -11,7 +11,7 @@ View page indicator like Instagram
 
 ```yaml
 dependencies:
-  scrolling_page_indicator: ^0.1.2
+  scrolling_page_indicator: ^0.1.4
 ```
 2) Install
 

@@ -1,4 +1,7 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:scrolling_page_indicator/scrolling_page_indicator.dart';
 
 void main() => runApp(MyApp());
@@ -11,14 +14,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'ScrollingPageIndicator Demo'),
+      home: const MyHomePage(title: 'ScrollingPageIndicator Demo'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -27,7 +29,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  PageController _controller;
+  PageController? _controller;
 
   @override
   void initState() {
@@ -37,15 +39,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> items = [
-      buildPage("0", Colors.red),
-      buildPage("1", Colors.blue),
-      buildPage("2", Colors.green),
-      buildPage("3", Colors.amber),
-      buildPage("4", Colors.deepPurple),
-      buildPage("5", Colors.teal),
-      buildPage("6", Colors.pink),
-      buildPage("7", Colors.brown)
+    final List<Widget> items = <Widget>[
+      buildPage('0', Colors.red),
+      buildPage('1', Colors.blue),
+      buildPage('2', Colors.green),
+      buildPage('3', Colors.amber),
+      buildPage('4', Colors.deepPurple),
+      buildPage('5', Colors.teal),
+      buildPage('6', Colors.pink),
+      buildPage('7', Colors.brown)
     ];
 
     return Scaffold(
@@ -72,7 +74,6 @@ class _MyHomePageState extends State<MyHomePage> {
               itemCount: items.length,
               orientation: Axis.horizontal,
             ),
-
           ],
         ),
       ),
@@ -81,10 +82,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget buildPage(String text, Color color) {
     return Padding(
-      padding: EdgeInsets.all(12),
+      padding: const EdgeInsets.all(12),
       child: Container(
         color: color,
-        child: Center(child: Text(text, style: TextStyle(fontSize: 42, color: Colors.white),),),
+        child: Center(
+          child: Text(
+            text,
+            style: const TextStyle(fontSize: 42, color: Colors.white),
+          ),
+        ),
       ),
     );
   }
