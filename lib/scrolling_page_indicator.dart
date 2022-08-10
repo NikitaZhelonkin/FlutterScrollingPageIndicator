@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class ScrollingPageIndicator extends StatefulWidget {
-
   final double dotSize;
 
   final double dotSelectedSize;
@@ -50,11 +49,9 @@ class ScrollingPageIndicator extends StatefulWidget {
 }
 
 class _ScrollingPageIndicatorState extends State<ScrollingPageIndicator> {
-
   double _page = 0;
 
   Paint _paint = new Paint();
-
 
   @override
   void initState() {
@@ -79,13 +76,20 @@ class _ScrollingPageIndicatorState extends State<ScrollingPageIndicator> {
 
   @override
   Widget build(BuildContext context) {
-    int itemCount = widget.itemCount >= widget.visibleDotCount ? widget.visibleDotCount : widget
-        .itemCount;
+    int itemCount = widget.itemCount >= widget.visibleDotCount
+        ? widget.visibleDotCount
+        : widget.itemCount;
     double width = (itemCount - 1) * widget.dotSpacing + widget.dotSelectedSize;
     Widget child = new SizedBox(
-        width: widget.orientation == Axis.horizontal ? width : widget.dotSelectedSize,
-        height: widget.orientation == Axis.vertical ? width : widget.dotSelectedSize,
-        child: new CustomPaint(painter: _Painter(widget, currentPage, _paint, widget.orientation)));
+        width: widget.orientation == Axis.horizontal
+            ? width
+            : widget.dotSelectedSize,
+        height: widget.orientation == Axis.vertical
+            ? width
+            : widget.dotSelectedSize,
+        child: new CustomPaint(
+            painter:
+                _Painter(widget, currentPage, _paint, widget.orientation)));
     return new IgnorePointer(
       child: child,
     );
@@ -102,11 +106,9 @@ class _ScrollingPageIndicatorState extends State<ScrollingPageIndicator> {
   void _onController() {
     setState(() {});
   }
-
 }
 
 class _Painter extends CustomPainter {
-
   final ScrollingPageIndicator _widget;
   final double _page;
   final Paint _paint;
@@ -134,7 +136,6 @@ class _Painter extends CustomPainter {
     }
   }
 
-
   @override
   void paint(Canvas canvas, Size size) {
     if (_widget.itemCount < _widget.visibleDotThreshold) {
@@ -146,15 +147,17 @@ class _Painter extends CustomPainter {
     adjustFramePosition(page, width);
 
     // Some empirical coefficients
-    double scaleDistance = (_widget.dotSpacing + (_widget.dotSelectedSize - _widget.dotSize) / 2) *
-        0.7;
+    double scaleDistance =
+        (_widget.dotSpacing + (_widget.dotSelectedSize - _widget.dotSize) / 2) *
+            0.7;
     double smallScaleDistance = _widget.dotSelectedSize / 2;
 
-    int firstVisibleDotPos = ((_visibleFramePosition - _firstDotOffset) / _widget.dotSpacing)
-        .floor();
+    int firstVisibleDotPos =
+        ((_visibleFramePosition - _firstDotOffset) / _widget.dotSpacing)
+            .floor();
     int lastVisibleDotPos = firstVisibleDotPos +
         ((_visibleFramePosition + width - getDotOffsetAt(firstVisibleDotPos)) /
-            _widget.dotSpacing)
+                _widget.dotSpacing)
             .floor();
 
     // If real dots count is less than we can draw inside visible frame, we move lastVisibleDotPos
@@ -235,9 +238,12 @@ class _Painter extends CustomPainter {
 
       // Block frame offset near start and end
       int firstCenteredDotIndex = (_widget.visibleDotCount / 2).floor();
-      double lastCenteredDot = getDotOffsetAt(_widget.itemCount - 1 - firstCenteredDotIndex);
-      if (_visibleFramePosition + width / 2 < getDotOffsetAt(firstCenteredDotIndex)) {
-        _visibleFramePosition = getDotOffsetAt(firstCenteredDotIndex) - width / 2;
+      double lastCenteredDot =
+          getDotOffsetAt(_widget.itemCount - 1 - firstCenteredDotIndex);
+      if (_visibleFramePosition + width / 2 <
+          getDotOffsetAt(firstCenteredDotIndex)) {
+        _visibleFramePosition =
+            getDotOffsetAt(firstCenteredDotIndex) - width / 2;
       } else if (_visibleFramePosition + width / 2 > lastCenteredDot) {
         _visibleFramePosition = lastCenteredDot - width / 2;
       }
@@ -248,5 +254,4 @@ class _Painter extends CustomPainter {
   bool shouldRepaint(_Painter oldDelegate) {
     return oldDelegate._page != _page;
   }
-
 }
